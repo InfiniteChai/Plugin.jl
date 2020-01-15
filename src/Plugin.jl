@@ -4,7 +4,8 @@ import Pkg
 import UUIDs
 import Pkg.TOML
 using Suppressor: @suppress_err
-export plugins
+
+export plugins, load
 
 struct PluginIterator
     name::String
