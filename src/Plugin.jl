@@ -3,7 +3,7 @@ module Plugin
 import Pkg
 import UUIDs
 import Pkg.TOML
-
+using Suppressor: @suppress_err
 export plugins
 
 struct PluginIterator
@@ -20,7 +20,8 @@ end
 
 function load(plugin::PluginEntry)
     importexpr = Expr(:using, Expr(:., plugin.package))
-    code = :($importexpr; $(plugin.expr))
+    suppressed = Expr(:macrocall, Symbol("@suppress_err"), " ", importexpr)
+    code = :($suppressed; $(plugin.expr))
     eval(code)
 end
 
