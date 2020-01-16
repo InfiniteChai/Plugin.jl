@@ -23,7 +23,7 @@ function load(plugin::PluginEntry)
     importexpr = Expr(:using, Expr(:., plugin.package))
     suppressed = Expr(:macrocall, Symbol("@suppress_err"), " ", importexpr)
 
-    if x.head == :toplevel
+    if plugin.expr.head == :toplevel
         code = copy(plugin.expr)
         insert!(code.args, 1, suppressed)
     else
