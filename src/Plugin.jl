@@ -22,8 +22,15 @@ end
 function load(plugin::PluginEntry)
     importexpr = Expr(:using, Expr(:., plugin.package))
     suppressed = Expr(:macrocall, Symbol("@suppress_err"), " ", importexpr)
-    code = :($suppressed; $(plugin.expr))
-    eval(code)
+
+    if x.head == :toplevel
+        code = copy(plugin.expr)
+        insert!(code.args, 1, suppressed)
+    else
+        code = :($suppressed; $(plugin.expr))
+    end
+
+    return eval(code)
 end
 
 Base.IteratorSize(::Type{PluginIterator}) = Base.SizeUnknown()
